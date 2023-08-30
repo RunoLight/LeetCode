@@ -1,2 +1,8 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿namespace LeetCode;
+
+public abstract class Program
+{
+    public static void Main(string[] args)
+    {
+    }
+}
