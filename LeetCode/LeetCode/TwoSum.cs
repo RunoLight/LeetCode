@@ -7,6 +7,12 @@
 // use the same element twice.
 // You can return the answer in any order.
 
+// Example 1:
+// 
+// Input: nums = [2,7,11,15], target = 9
+// Output: [0,1]
+// Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
+
 public class Solution
 {
     public class Digit
@@ -36,9 +42,10 @@ public class Solution
         // O(n)
         // When left border moves right - left sum's number getting bigger, when right border moves left - right sum's
         // number getting smaller, because array is sorted.
-        while (true)
+        int sum;
+        do
         {
-            var sum = l[leftBorder].value + l[rightBorder].value;
+            sum = l[leftBorder].value + l[rightBorder].value;
             if (sum < target)
             {
                 leftBorder++;
@@ -51,7 +58,8 @@ public class Solution
             {
                 break;
             }
-        }
+        } while (sum != target);
+
 
         return new[] { l[leftBorder].idx, l[rightBorder].idx };
     }
