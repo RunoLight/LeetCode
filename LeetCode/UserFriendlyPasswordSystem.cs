@@ -130,121 +130,105 @@
  * For each "authorize" event, check if the given hash matches either the hash of the current password or any string formed
  * by appending a single character to the current password.
  */
-
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Collections;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
-using System.Text;
 using System;
+using System.Collections.Generic;
 
-class Result
+class Solution
 {
-    public static List<int> authEvents(List<List<string>> events) // TODO Check with one password less at end
+    const int MOD = 1000000007;
+    const int P = 131;
+
+    // Helper function to compute the hash of a string
+    static long ComputeHash(string s)
     {
-        List<int> operationsResult = new List<int>(events.Count);
-        int currentPasswordHash = 0;
-        List<int> availablePasswordHashes = new List<int>();
-
-        for (int i = 0; i < events.Count; i++)
+        long hashValue = 0;
+        long pPow = 1; // P^0 initially
+        
+        for (int i = s.Length - 1; i >= 0; i--)
         {
-            string operation = events[i][0];
-            string parameter = events[i][1];
+            hashValue = (hashValue + (s[i] * pPow) % MOD) % MOD;
+            pPow = (pPow * P) % MOD;
+        }
 
-            if (operation.Equals("setPassword"))
+        return hashValue;
+    }
+
+    public static List<int> AuthEvents(List<string[]> events)
+    {
+        string currentPassword = "";
+        long currentHash = 0;
+        List<int> results = new List<int>();
+
+        // Precompute powers of P up to length 10 (password length is at most 9)
+        long[] powersOfP = new long[10];
+        powersOfP[0] = 1;
+        for (int i = 1; i < 10; i++)
+        {
+            powersOfP[i] = (powersOfP[i - 1] * P) % MOD;
+        }
+
+        foreach (var eventDetails in events)
+        {
+            if (eventDetails[0] == "setPassword")
             {
-                currentPasswordHash = GetPasswordHash(parameter);
-                availablePasswordHashes = GetPasswordHashesWhenAddedSymbol(parameter);
+                // Update the current password and its hash
+                currentPassword = eventDetails[1];
+                currentHash = ComputeHash(currentPassword);
             }
-            else
+            else if (eventDetails[0] == "authorize")
             {
-                if (currentPasswordHash.ToString().Equals(parameter) ||
-                    availablePasswordHashes.Any(hash => hash.ToString().Equals(parameter))
-                   )
+                // Attempt to authorize
+                long attemptedHash = long.Parse(eventDetails[1]);
+                
+                // Check if it matches the current password's hash
+                if (attemptedHash == currentHash)
                 {
-                    operationsResult.Add(1);
+                    results.Add(1);
+                    continue;
+                }
+
+                // Check if it matches the hash of the password with one extra character appended
+                bool authorized = false;
+                for (int c = 48; c <= 122; c++) // ASCII range for '0'-'9', 'A'-'Z', 'a'-'z'
+                {
+                    long extraCharHash = (currentHash * P + c) % MOD;
+                    if (extraCharHash == attemptedHash)
+                    {
+                        authorized = true;
+                        break;
+                    }
+                }
+
+                if (authorized)
+                {
+                    results.Add(1);
                 }
                 else
                 {
-                    operationsResult.Add(0);
+                    results.Add(0);
                 }
             }
         }
 
-        return operationsResult;
+        return results;
     }
 
-    private static List<int> GetPasswordHashesWhenAddedSymbol(string password)
-    {
-        password += (char) 0;
-        
-        const int lastAsciiCharacterCode = 127;
-
-        List<int> result = new List<int>(lastAsciiCharacterCode);
-        
-        var p = 131;
-        var M = Math.Pow(10, 9) + 7;
-        var n = password.Length;
-
-        int currentHash = 0;
-        for (int i = 0; i < password.Length; i++)
-        {
-            currentHash += password[i] * (int) Math.Pow(p, n - i - 1);
-        }
-
-        for (int i = 0; i <= lastAsciiCharacterCode; i++)
-        {
-            result.Add((int) ((currentHash + i) % M));
-        }
-        
-        return result;
-    }
-
-    public static int GetPasswordHash(string password)
-    {
-        var p = 131;
-        var M = Math.Pow(10, 9) + 7;
-        var n = password.Length;
-        
-        var result = 0;
-        for (int i = 0; i < password.Length; i++)
-        {
-            result += password[i] * (int) Math.Pow(p, n - i - 1);
-        }
-        
-        return (int) (result % M);
-    }
-}
-
-public static class Solution
-{
     public static void Main()
     {
-        // TextWriter textWriter = new StreamWriter(@System.Environment.GetEnvironmentVariable("OUTPUT_PATH"), true);
-        TextWriter textWriter = Console.Out;
+        // Example input processing
+        int q = int.Parse(Console.ReadLine());
+        List<string[]> events = new List<string[]>();
 
-        int eventsRows = Convert.ToInt32(Console.ReadLine().Trim());
-        int eventsColumns = Convert.ToInt32(Console.ReadLine().Trim());
-
-        List<List<string>> events = new List<List<string>>();
-
-        for (int i = 0; i < eventsRows; i++)
+        for (int i = 0; i < q; i++)
         {
-            events.Add(Console.ReadLine().TrimEnd().Split(' ').ToList());
+            string[] eventDetails = Console.ReadLine().Split();
+            events.Add(eventDetails);
         }
 
-        List<int> result = Result.authEvents(events);
-
-        textWriter.WriteLine(String.Join("\n", result));
-
-        textWriter.Flush();
-        textWriter.Close();
+        List<int> result = AuthEvents(events);
+        foreach (var res in result)
+        {
+            Console.WriteLine(res);
+        }
     }
 }
