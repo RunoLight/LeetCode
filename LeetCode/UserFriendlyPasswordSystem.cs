@@ -87,25 +87,6 @@
 //
 // 0
 // 0
-//
-// Explanation
-//
-// There are 5 events to process:
-//
-// 	
-// 	The first one sets the password to "1".
-// 	The second one sets the password to "2".
-// 	The third one sets the password to "3".
-// 	The fourth event tries to authorize with the hash value 49, which corresponds to "1". Because this is invalid for the current password of "3", this event returns 0.
-// 	The fifth event tries to authorize with the hash value 50, which corresponds to "2". Because this is invalid for the current password of "3", this event returns 0.
-// 	
-
-// </div>
-// </details>
-// </div>
-// <style type="text/css">1 ≤ |source| ≤ 10^6 .ps-content-wrapper-v0 div { margin: 0 auto; overflow: auto; } .ps-content-wrapper-v0 div.preheader { display: none; } .ps-content-wrapper-v0 p { white-space: pre-wrap; padding-left: 4px; padding-right: 4px; padding-top: 0px; padding-bottom: 2px; } .ps-content-wrapper-v0 p.section-title { font-weight: bold; padding-bottom: 0px; } .ps-content-wrapper-v0 ol.plain-list, .ps-content-wrapper-v0 ul.plain-list { list-style-type: none; padding: 4px; } .ps-content-wrapper-v0 li { white-space: normal; margin-top: 4px; margin-bottom: 4px; } .ps-content-wrapper-v0 code { color: black; } .ps-content-wrapper-v0 pre { background-color: #f4faff; border: 0; border-radius: 2px; margin: 8px; padding: 10px; } .ps-content-wrapper-v0 figure { background-color: transparent; display: table; margin-top: 8px; margin-bottom: 8px; text-align: center; margin-left: auto; margin-right: auto; } .ps-content-wrapper-v0 figcaption { text-align: center; display: table-caption; caption-side: bottom; margin-top: 4px; margin-bottom: 4px; } .ps-content-wrapper-v0 img { width: auto; max-width: 100%; height: auto; } .ps-content-wrapper-v0 details { background-color: transparent; padding-left: 4px; padding-right: 4px; padding-top: 0px; padding-bottom: 2px; } .ps-content-wrapper-v0 details summary { background-color: #39424e; color: white; font-weight: bold; margin-top: 4px; margin-bottom: 4px; padding: 8px; } .ps-content-wrapper-v0 details div.collapsable-details { margin: 0 auto; padding-left: 4px; padding-right: 4px; padding-top: 0px; padding-bottom: 2px; overflow: auto; } .ps-content-wrapper-v0 details div.collapsable-details pre { margin-left: 4px; margin-right: 4px; margin-top: 4px; margin-bottom: 4px; } .ps-content-wrapper-v0 table { border: 1px solid black; border-collapse: collapse; border-color: darkgray; margin: 0 auto; margin-top: 8px; margin-bottom: 8px; padding: 8px; width: 96%; table-layout: fixed; } .ps-content-wrapper-v0 table tbody tr th, .ps-content-wrapper-v0 table tbody tr td { font-weight: bold; white-space: nowrap; text-align: center; vertical-align: middle; border: 1px solid black; border-color: darkgray; padding: 8px; } .ps-content-wrapper-v0 table tbody tr th.description { width: 60%; } .ps-content-wrapper-v0 table tbody tr td { font-weight: normal; white-space: normal; } .ps-content-wrapper-v0 table.function-params tbody tr:first-child td.headers { border-bottom-width: 2px; } .ps-content-wrapper-v0 table.function-params tbody tr:last-child td { border-top-width: 2px; border-top-color: darkgray; } .ps-content-wrapper-v0 table.function-params tbody tr td.headers { width: 25%; font-weight: bold; text-align: center; border: 1px solid black; border-right-width: 2px; border-color: darkgray; } .ps-content-wrapper-v0 table.function-params tbody tr td.params-table-cell { width: 100%; height: 100%; padding: 0px; } .ps-content-wrapper-v0 table.function-params tbody tr td.params-table-cell table.params-table { width: 100%; height: 100%; padding: 0px; margin: 0px; border: 0; } .ps-content-wrapper-v0 table.function-params tbody tr td.params-table-cell table.params-table tbody tr td.code { white-space: normal; } .ps-content-wrapper-v0 table.function-params tbody tr td.params-table-cell table.params-table tbody tr th { border-top: 0; } .ps-content-wrapper-v0 table.function-params tbody tr td.params-table-cell table.params-table tbody tr th:first-child { border-left: 0; } .ps-content-wrapper-v0 table.function-params tbody tr td.params-table-cell table.params-table tbody tr th:last-child { border-right: 0; } .ps-content-wrapper-v0 table.function-params tbody tr td.params-table-cell table.params-table tbody tr:last-child td { border-bottom: 0; border-top-width: 1px; } .ps-content-wrapper-v0 table.function-params tbody tr td.params-table-cell table.params-table tbody tr td:first-child { border-left: 0; } .ps-content-wrapper-v0 table.function-params tbody tr td.params-table-cell table.params-table tbody tr td:last-child { border-right: 0; } .ps-content-wrapper-v0 .left { text-align: left; } .ps-content-wrapper-v0 .right { text-align: right; } .ps-content-wrapper-v0 .code { font-family: monospace; white-space: nowrap; } .ps-content-wrapper-v0 .json-object-array ol, .ps-content-wrapper-v0 .json-object-array ol ul { margin-top: 0px; padding-left: 14px; } .json-object-array li { float: left; margin-right: 30px; margin-left: 10px; } .json-object-array pre { padding: 4px; margin-left: 0px; }
-// </style>
-// </div>
 
 /*
  * Approach
@@ -130,6 +111,7 @@
  * For each "authorize" event, check if the given hash matches either the hash of the current password or any string formed
  * by appending a single character to the current password.
  */
+
 using System;
 using System.Collections.Generic;
 
@@ -138,7 +120,6 @@ class Solution
     const int MOD = 1000000007;
     const int P = 131;
 
-    // Helper function to compute the hash of a string
     static long ComputeHash(string s)
     {
         long hashValue = 0;
@@ -153,7 +134,8 @@ class Solution
         return hashValue;
     }
 
-    public static List<int> AuthEvents(List<string[]> events)
+    // ReSharper disable once InconsistentNaming <- It should be named like this to be accepted in automated system
+    public static List<int> authEvents(List<List<string>> events)
     {
         string currentPassword = "";
         long currentHash = 0;
@@ -191,6 +173,15 @@ class Solution
                 bool authorized = false;
                 for (int c = 48; c <= 122; c++) // ASCII range for '0'-'9', 'A'-'Z', 'a'-'z'
                 {
+                    // When appending a new character to a string, the hash formula requires shifting the entire previous
+                    // hash to account for the new character being added at the end.
+                    
+                    // To shift the hash, you multiply the existing hash by the base P. This effectively "moves" the entire
+                    // current string one position left in the polynomial hash formula. If the password was of length n,
+                    // multiplying by P makes it behave as if the string is now of length n + 1, because each character's
+                    // contribution shifts to a higher power of P.
+                    
+                    // https://www.geeksforgeeks.org/string-hashing-using-polynomial-rolling-hash-function/#
                     long extraCharHash = (currentHash * P + c) % MOD;
                     if (extraCharHash == attemptedHash)
                     {
@@ -199,14 +190,7 @@ class Solution
                     }
                 }
 
-                if (authorized)
-                {
-                    results.Add(1);
-                }
-                else
-                {
-                    results.Add(0);
-                }
+                results.Add(authorized ? 1 : 0);
             }
         }
 
@@ -217,15 +201,15 @@ class Solution
     {
         // Example input processing
         int q = int.Parse(Console.ReadLine());
-        List<string[]> events = new List<string[]>();
+        List<List<string>> events = new List<List<string>>();
 
         for (int i = 0; i < q; i++)
         {
-            string[] eventDetails = Console.ReadLine().Split();
+            var eventDetails = Console.ReadLine().Split().ToList();
             events.Add(eventDetails);
         }
 
-        List<int> result = AuthEvents(events);
+        List<int> result = authEvents(events);
         foreach (var res in result)
         {
             Console.WriteLine(res);
