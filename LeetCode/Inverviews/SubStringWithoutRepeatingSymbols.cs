@@ -33,35 +33,34 @@
     [(14, 15), (16, 18), (20, 23)]
 */
 
-// Not ended
+// TODO JUST A DRAFT
 
 public class SubStringWithoutRepeatingSymbols
 {
-    List<(int, int)> Intersection(List<(int, int)> user1, List<(int, int)> user2)
+    List<(int, int)> Intersection(List<(int start, int end)> user1, List<(int, int)> user2)
     {
         List<(int, int)> result = new();
         int i = 0, j = 0;
-        int startmax = 0;
-        (int, int) el1, el2;
-    
+        const int startmax = 0;
+
         while (i != user1.Count && j != user2.Count)
         {
-            el1 = user1[i];
-            el2 = user2[j];
+            (int start, int end) el1 = user1[i];
+            (int start, int end) el2 = user2[j];
 
-            int startMax = Math.Max(el1.Item1, el2.Item1);
-            int endMin = Math.Min(el1.Item2, el2.Item2);
+            int startMax = Math.Max(el1.start, el2.start);
+            int endMin = Math.Min(el1.end, el2.end);
 
             if (startmax < endMin)
             {
                 result.Add((startMax, endMin));
             }
 
-            if (el1.Item2 < el2.Item2)
+            if (el1.end < el2.end)
             {
                 i++;
             }
-            else if (el1.Item2 > el2.Item2)
+            else if (el1.end > el2.end)
             {
                 j++;
             }
