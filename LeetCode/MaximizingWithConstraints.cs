@@ -126,7 +126,6 @@
 // </details>
 // </div>
 // </div></div></section></div></div></div></div>
-
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Collections;
@@ -141,68 +140,66 @@ using System.Text.RegularExpressions;
 using System.Text;
 using System;
 
-
-
 class Result
 {
-
-    /*
-     * Complete the 'maxElement' function below.
-     *
-     * The function is expected to return an INTEGER.
-     * The function accepts following parameters:
-     *  1. INTEGER n
-     *  2. INTEGER maxSum
-     *  3. INTEGER k
-     */
-
-    public static int F(int neighbour, int valuesAmount)
-    {
-        int maxMin = neighbour - 1;
-        
-        int current = 1;
-        int sum = 0;
-        for (int i = 0; i < valuesAmount; i++)
-        {
-            sum += current;
-            current++;
-            
-            if (current > maxMin)
-                current = maxMin;
-        }
-        return sum;
-    }
-
     public static int maxElement(int n, int maxSum, int k)
     {
-        // Lets search for X - the biggest possible value at k index
-        int best = 1;
+        // Binary search bounds: minimum value is 1, maximum value is maxSum
+        int left = 1, right = maxSum;
         
-        int leftBound = 1;
-        int rightBound = maxSum;
-        
-        while (leftBound <= rightBound)
+        while (left < right)
         {
-            int current = (leftBound + rightBound) / 2;
-            var sum = n * current - F(current, k) - F(current, n - k - 1);
-            if (sum == maxSum)
-            {
-                return current;
-            }
-            else if (sum < maxSum)
-            {
-                if (current > best)
-                    best = current;
-
-                leftBound = current + 1;
-            }
+            // In default "/2" floors value if it's X.5f. We doing ceiling via +1. Because we are not finding elements here,
+            // but we searching best-possible of all, from left to right, so when there's two elements left - set mid as right one
+            // to assign (mid - 1) or let left be new and last mid.
+            int mid = (right + left + 1) / 2;
+            // Check if it's possible to have mid as the value at index k
+            if (CanHaveValueAtK(n, maxSum, k, mid))
+                left = mid; // Mid is a valid candidate, try for a larger one
             else
-            {
-                rightBound = current - 1;
-            }
+                right = mid - 1; // Mid is too large, try smaller values
         }
         
-        return best;
+        return left; // The maximum valid value
+    }
+    
+    // Helper function to check if we can have 'val' at index k
+    private static bool CanHaveValueAtK(int n, int maxSum, int k, int val)
+    {
+        // Calculate the sum of the array if a[k] = val
+        long sum = val;
+        
+        // Calculate the sum of elements to the left of k
+        sum += SumLeftOrRight(k, val);
+        
+        // Calculate the sum of elements to the right of k
+        sum += SumLeftOrRight(n - k - 1, val);
+        
+        return sum <= maxSum;
+    }
+    
+    // Helper function to calculate the sum of elements on one side of k
+    private static long SumLeftOrRight(int count, int peak)
+    {
+        if (count == 0) return 0;
+        
+        // Calculate the decreasing sequence to the left or right of the peak
+        long sum = 0;
+        int height = peak - 1;
+        
+        if (count <= height)
+        {
+            // If the number of elements can all be in a decreasing sequence
+            sum = (long)count * (height + (height - count + 1)) / 2;
+        }
+        else
+        {
+            // If not, there will be trailing ones
+            sum = (long)height * (height + 1) / 2;
+            sum += (count - height); // The rest are ones
+        }
+        
+        return sum;
     }
 }
 
