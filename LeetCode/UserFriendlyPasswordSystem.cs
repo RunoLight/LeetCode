@@ -87,7 +87,6 @@
 //
 // 0
 // 0
-
 /*
  * Approach
  * Hashing Function: We need to calculate the hash value h(s) for any string s using the formula:
@@ -111,11 +110,10 @@
  * For each "authorize" event, check if the given hash matches either the hash of the current password or any string formed
  * by appending a single character to the current password.
  */
-
 using System;
 using System.Collections.Generic;
 
-class Solution
+class Solution2
 {
     const int MOD = 1000000007;
     const int P = 131;
@@ -124,7 +122,7 @@ class Solution
     {
         long hashValue = 0;
         long pPow = 1; // P^0 initially
-        
+
         for (int i = s.Length - 1; i >= 0; i--)
         {
             hashValue = (hashValue + (s[i] * pPow) % MOD) % MOD;
@@ -161,7 +159,7 @@ class Solution
             {
                 // Attempt to authorize
                 long attemptedHash = long.Parse(eventDetails[1]);
-                
+
                 // Check if it matches the current password's hash
                 if (attemptedHash == currentHash)
                 {
@@ -175,12 +173,12 @@ class Solution
                 {
                     // When appending a new character to a string, the hash formula requires shifting the entire previous
                     // hash to account for the new character being added at the end.
-                    
+
                     // To shift the hash, you multiply the existing hash by the base P. This effectively "moves" the entire
                     // current string one position left in the polynomial hash formula. If the password was of length n,
                     // multiplying by P makes it behave as if the string is now of length n + 1, because each character's
                     // contribution shifts to a higher power of P.
-                    
+
                     // https://www.geeksforgeeks.org/string-hashing-using-polynomial-rolling-hash-function/#
                     long extraCharHash = (currentHash * P + c) % MOD;
                     if (extraCharHash == attemptedHash)
